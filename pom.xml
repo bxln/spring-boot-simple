@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>spring-boot-simple</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>spring-boot-simple</name>
+    <description>spring-boot-simple</description>
+
+    <modules>
+        <module>spring-boot-dependencies</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version> <!-- Java版本 -->
+        <maven.compiler.source>${java.version}</maven.compiler.source> <!-- 源代码编译版本 -->
+        <maven.compiler.target>${java.version}</maven.compiler.target> <!-- 目标编译版本 -->
+
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version> <!-- Maven编译插件版本 -->
+        <maven.surefire.plugin.version>3.0.0</maven.surefire.plugin.version> <!-- Maven测试插件版本 -->
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+    </properties>
+
+    <!-- 依赖管理（不会直接引入依赖，只是管理版本） -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!-- 添加中国云Maven仓库配置，加速依赖下载 -->
+    <repositories>
+        <!-- 腾讯云Maven仓库 -->
+        <repository>
+            <id>tencent-cloud</id>
+            <name>Tencent Cloud Maven Repository</name>
+            <url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled> <!-- 启用发布版本 -->
+            </releases>
+            <snapshots>
+                <enabled>true</enabled> <!-- 启用快照版本 -->
+            </snapshots>
+        </repository>
+        <!-- 阿里云中央仓库镜像 -->
+        <repository>
+            <id>aliyun-central</id>
+            <name>Aliyun Central Maven Repository</name>
+            <url>https://maven.aliyun.com/repository/central</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled> <!-- 不启用快照版本 -->
+            </snapshots>
+        </repository>
+        <!-- 阿里云公共仓库 -->
+        <repository>
+            <id>aliyun-public</id>
+            <name>Aliyun Public Maven Repository</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- 阿里云Spring仓库 -->
+        <repository>
+            <id>aliyun-spring</id>
+            <name>Aliyun Spring Maven Repository</name>
+            <url>https://maven.aliyun.com/repository/spring</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- Maven中央仓库（最后尝试） -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- Maven插件仓库配置 -->
+    <pluginRepositories>
+        <!-- 腾讯云Maven插件仓库 -->
+        <pluginRepository>
+            <id>tencent-cloud-plugin</id>
+            <name>Tencent Cloud Maven Plugin Repository</name>
+            <url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <!-- 阿里云Maven插件仓库 -->
+        <pluginRepository>
+            <id>aliyun-plugin</id>
+            <name>Aliyun Maven Plugin Repository</name>
+            <url>https://maven.aliyun.com/repository/central</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- 构建配置 -->
+    <build>
+        <!-- 插件管理（不会直接使用插件，只是管理版本和配置） -->
+        <pluginManagement>
+            <plugins>
+                <!-- Maven清理插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <!-- 该插件用于清理项目构建目录：
+                         1. 删除target目录及其所有内容
+                         2. 可配置额外的清理目录和文件
+                         3. 通过mvn clean命令执行
+                         4. 为新的构建过程提供干净的环境
+                         5. 可与其他构建阶段组合使用，如mvn clean install -->
+                </plugin>
+                <!-- Maven编译插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source> <!-- 源代码Java版本 -->
+                        <target>${java.version}</target> <!-- 目标Java版本 -->
+                        <encoding>UTF-8</encoding> <!-- 源代码编码 -->
+                    </configuration>
+                    <!-- 该插件用于编译Java源代码：
+                         1. 将Java源文件编译为class文件
+                         2. 控制源代码和目标代码的Java版本兼容性
+                         3. 设置源代码编码格式（UTF-8）
+                         4. 支持编译器参数配置
+                         5. 可配置注解处理器 -->
+                </plugin>
+                <!-- Maven测试插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <!-- 该插件用于运行单元测试：
+                         1. 执行项目中的测试类（通常以Test结尾）
+                         2. 生成测试报告（默认位于target/surefire-reports目录）
+                         3. 支持跳过测试（-DskipTests参数）
+                         4. 可配置测试失败时是否停止构建
+                         5. 支持并行测试执行以提高效率 -->
+                </plugin>
+                <!-- Spring Boot Maven插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <!-- 该插件的主要作用：
+                         1. 创建可执行JAR/WAR：将应用打包成独立可执行文件，包含所有依赖
+                         2. 自动重新打包：执行repackage目标，转换为可执行的Spring Boot JAR
+                         3. 提供开发工具：支持spring-boot:run命令快速运行应用
+                         4. 依赖管理：与Spring Boot依赖管理系统集成
+                         5. 创建启动脚本：可生成Unix/Linux系统启动脚本 -->
+                </plugin>
+
+                <!-- Maven资源处理插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding> <!-- 资源文件编码 -->
+                    </configuration>
+                    <!-- 该插件用于处理项目资源文件：
+                         1. 复制src/main/resources下的资源到输出目录
+                         2. 处理资源文件中的变量替换（如${property}）
+                         3. 确保资源文件使用正确的编码（UTF-8）
+                         4. 支持资源过滤和包含/排除模式 -->
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
