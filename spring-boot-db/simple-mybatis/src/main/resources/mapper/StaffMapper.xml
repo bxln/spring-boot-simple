@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.staff.mapper.StaffMapper">
+  <resultMap id="BaseResultMap" type="com.example.staff.domain.Staff">
+    <!--@mbg.generated-->
+    <!--@Table staff-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" typeHandler="com.example.staff.handler.GenderTypeHandler" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, code, `name`, age, gender, phone, email, create_time, modify_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from staff
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from staff
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.staff.domain.Staff" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into staff (code, `name`, age, 
+      gender, phone, email, 
+      create_time, modify_time)
+    values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, 
+      #{gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.staff.domain.Staff" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into staff
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.staff.domain.Staff">
+    <!--@mbg.generated-->
+    update staff
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.staff.domain.Staff">
+    <!--@mbg.generated-->
+    update staff
+    set code = #{code,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      gender = #{gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 扩展查询方法 -->
+  <!-- 查询所有员工 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from staff
+    order by id
+  </select>
+
+  <!-- 根据员工编码查询 -->
+  <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from staff
+    where code = #{code,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 根据姓名模糊查询 -->
+  <select id="selectByNameLike" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from staff
+    where `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    order by id
+  </select>
+
+  <!-- 根据年龄范围查询 -->
+  <select id="selectByAgeRange" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from staff
+    where 1=1
+    <if test="minAge != null">
+      and age &gt;= #{minAge,jdbcType=INTEGER}
+    </if>
+    <if test="maxAge != null">
+      and age &lt;= #{maxAge,jdbcType=INTEGER}
+    </if>
+    order by age, id
+  </select>
+
+  <!-- 根据性别查询 -->
+  <select id="selectByGender" parameterType="com.example.staff.domain.Gender" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from staff
+    where gender = #{gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler}
+    order by id
+  </select>
+
+  <!-- 分页查询 -->
+  <select id="selectByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from staff
+    order by id
+    limit #{offset,jdbcType=INTEGER}, #{limit,jdbcType=INTEGER}
+  </select>
+
+  <!-- 统计总数 -->
+  <select id="countAll" resultType="java.lang.Integer">
+    select count(*) from staff
+  </select>
+
+  <!-- 根据条件统计 -->
+  <select id="countByCondition" parameterType="com.example.staff.domain.Staff" resultType="java.lang.Integer">
+    select count(*) from staff
+    where 1=1
+    <if test="code != null and code != ''">
+      and code = #{code,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null and name != ''">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="age != null">
+      and age = #{age,jdbcType=INTEGER}
+    </if>
+    <if test="gender != null">
+      and gender = #{gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler}
+    </if>
+    <if test="phone != null and phone != ''">
+      and phone = #{phone,jdbcType=VARCHAR}
+    </if>
+    <if test="email != null and email != ''">
+      and email = #{email,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <!-- 批量插入 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into staff (code, `name`, age, gender, phone, email, create_time, modify_time)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.code,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR}, #{item.age,jdbcType=INTEGER},
+       #{item.gender,jdbcType=VARCHAR,typeHandler=com.example.staff.handler.GenderTypeHandler}, #{item.phone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
+       #{item.createTime,jdbcType=TIMESTAMP}, #{item.modifyTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+
+  <!-- 批量删除 -->
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from staff
+    where id in
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+</mapper>

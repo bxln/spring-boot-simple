@@ -14,6 +14,7 @@
     <modules>
         <module>spring-boot-dependencies</module>
         <module>spring-boot-poitl</module>
+        <module>spring-boot-db</module>
     </modules>
 
     <properties>
@@ -21,6 +22,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source> <!-- 源代码编译版本 -->
         <maven.compiler.target>${java.version}</maven.compiler.target> <!-- 目标编译版本 -->
 
+        <spring.boot.maven.plugin.version>3.5.3</spring.boot.maven.plugin.version>
+        <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version> <!-- Maven编译插件版本 -->
         <maven.surefire.plugin.version>3.0.0</maven.surefire.plugin.version> <!-- Maven测试插件版本 -->
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -137,11 +140,24 @@
         <!-- 插件管理（不会直接使用插件，只是管理版本和配置） -->
         <pluginManagement>
             <plugins>
+                <!-- Spring Boot Maven插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.maven.plugin.version}</version>
+                    <!-- 该插件的主要作用：
+                         1. 创建可执行JAR/WAR：将应用打包成独立可执行文件，包含所有依赖
+                         2. 自动重新打包：执行repackage目标，转换为可执行的Spring Boot JAR
+                         3. 提供开发工具：支持spring-boot:run命令快速运行应用
+                         4. 依赖管理：与Spring Boot依赖管理系统集成
+                         5. 创建启动脚本：可生成Unix/Linux系统启动脚本 -->
+                </plugin>
+
                 <!-- Maven清理插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>${maven.clean.plugin.version}</version>
                     <!-- 该插件用于清理项目构建目录：
                          1. 删除target目录及其所有内容
                          2. 可配置额外的清理目录和文件
@@ -178,18 +194,6 @@
                          4. 可配置测试失败时是否停止构建
                          5. 支持并行测试执行以提高效率 -->
                 </plugin>
-                <!-- Spring Boot Maven插件 -->
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <!-- 该插件的主要作用：
-                         1. 创建可执行JAR/WAR：将应用打包成独立可执行文件，包含所有依赖
-                         2. 自动重新打包：执行repackage目标，转换为可执行的Spring Boot JAR
-                         3. 提供开发工具：支持spring-boot:run命令快速运行应用
-                         4. 依赖管理：与Spring Boot依赖管理系统集成
-                         5. 创建启动脚本：可生成Unix/Linux系统启动脚本 -->
-                </plugin>
-
                 <!-- Maven资源处理插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

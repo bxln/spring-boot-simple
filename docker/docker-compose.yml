@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0.20
+    container_name: mysql
+    # restart: always
+    privileged: true
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_log:/var/log/mysql
+      - mysql_data:/var/lib/mysql
+      - mysql_conf:/etc/mysql/conf.d
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    # restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --loglevel warning
+
+volumes:
+  mysql_log:
+  mysql_data:
+  mysql_conf:
+  redis_data:

@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: mybatis-multi-datasource-test
+
+  # 主数据源配置 - H2内存数据库
+  datasource:
+    primary:
+      jdbc-url: jdbc:h2:mem:primary_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+      username: sa
+      password: 
+      driver-class-name: org.h2.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 20000
+        idle-timeout: 300000
+        pool-name: PrimaryTestHikariPool
+    
+    # 从数据源配置 - H2内存数据库
+    secondary:
+      jdbc-url: jdbc:h2:mem:secondary_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+      username: sa
+      password: 
+      driver-class-name: org.h2.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 20000
+        idle-timeout: 300000
+        pool-name: SecondaryTestHikariPool
+
+# H2控制台配置（用于调试）
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+# MyBatis配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: false
+    use-generated-keys: true
+
+# 服务器配置
+server:
+  port: 8083
+
+# 日志配置
+logging:
+  level:
+    com.example: debug
+    org.apache.ibatis: debug
+    org.springframework.jdbc: debug
+
+# 测试环境特定配置
+spring.profiles.active: test

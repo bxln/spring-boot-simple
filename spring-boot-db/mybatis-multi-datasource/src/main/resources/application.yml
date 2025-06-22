@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: mybatis-multi-datasource
+
+  # 主数据源配置
+  datasource:
+    primary:
+      jdbc-url: jdbc:mysql://localhost:3306/primary_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # HikariCP连接池配置
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        pool-name: PrimaryHikariPool
+    
+    # 从数据源配置
+    secondary:
+      jdbc-url: jdbc:mysql://localhost:3306/secondary_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # HikariCP连接池配置
+      hikari:
+        maximum-pool-size: 15
+        minimum-idle: 3
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        pool-name: SecondaryHikariPool
+
+# MyBatis配置
+mybatis:
+  # 主数据源Mapper XML文件位置
+  primary:
+    mapper-locations: classpath:mapper/primary/*.xml
+    type-aliases-package: com.example.primary.domain
+  # 从数据源Mapper XML文件位置
+  secondary:
+    mapper-locations: classpath:mapper/secondary/*.xml
+    type-aliases-package: com.example.secondary.domain
+  # 通用配置
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true
+    use-generated-keys: true
+
+# 服务器配置
+server:
+  port: 8082
+
+# 日志配置
+logging:
+  level:
+    com.example: debug
+    org.apache.ibatis: debug

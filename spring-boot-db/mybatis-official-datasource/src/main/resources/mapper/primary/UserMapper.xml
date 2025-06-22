@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.primary.mapper.UserMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.primary.entity.User">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, username, email, phone, status, create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询用户 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM users 
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户名查询用户 -->
+    <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM users 
+        WHERE username = #{username}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM users 
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据状态查询用户 -->
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM users 
+        WHERE status = #{status}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 插入用户 -->
+    <insert id="insert" parameterType="com.example.primary.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (
+            username, 
+            email, 
+            phone, 
+            status, 
+            create_time, 
+            update_time
+        ) VALUES (
+            #{username}, 
+            #{email}, 
+            #{phone}, 
+            #{status}, 
+            #{createTime}, 
+            #{updateTime}
+        )
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="update" parameterType="com.example.primary.entity.User">
+        UPDATE users 
+        SET 
+            username = #{username},
+            email = #{email},
+            phone = #{phone},
+            status = #{status},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除用户 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM users 
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 统计用户总数 -->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) 
+        FROM users
+    </select>
+
+    <!-- 根据状态统计用户数 -->
+    <select id="countByStatus" parameterType="java.lang.Integer" resultType="java.lang.Long">
+        SELECT COUNT(*) 
+        FROM users 
+        WHERE status = #{status}
+    </select>
+
+</mapper>

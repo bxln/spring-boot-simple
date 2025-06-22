@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: mybatis-dynamic-datasource-test
+
+  # 测试环境多数据源配置 - 使用H2内存数据库
+  datasource:
+    # 主数据源配置 (写库)
+    master:
+      jdbc-url: jdbc:h2:mem:master_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+      username: sa
+      password: 
+      driver-class-name: org.h2.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 20000
+        idle-timeout: 300000
+        pool-name: MasterTestHikariPool
+    
+    # 从数据源配置 (读库)
+    slave:
+      jdbc-url: jdbc:h2:mem:slave_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+      username: sa
+      password: 
+      driver-class-name: org.h2.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 20000
+        idle-timeout: 300000
+        pool-name: SlaveTestHikariPool
+
+# H2控制台配置（用于调试）
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+# 动态数据源配置
+dynamic:
+  datasource:
+    default: master
+    read-write-separation: true
+    health-check:
+      enabled: false  # 测试环境关闭健康检查
+
+# MyBatis配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: false  # 测试环境关闭缓存
+    use-generated-keys: true
+    lazy-loading-enabled: false
+
+# 服务器配置
+server:
+  port: 8085
+
+# 日志配置
+logging:
+  level:
+    com.example: debug
+    org.apache.ibatis: debug
+    org.springframework.jdbc: debug
+    org.springframework.aop: debug
+    org.springframework.transaction: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%logger{50}] - %msg%n"
+
+# 测试环境特定配置
+spring.profiles.active: test
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

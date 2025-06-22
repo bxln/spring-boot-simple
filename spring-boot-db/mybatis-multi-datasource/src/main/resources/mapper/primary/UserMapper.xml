@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.primary.mapper.UserMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.primary.domain.User">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!-- 基础列 -->
+    <sql id="Base_Column_List">
+        id, username, email, phone, age, status, create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询用户 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 根据用户名查询用户 -->
+    <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        WHERE username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据状态查询用户 -->
+    <select id="selectByStatus" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        WHERE status = #{status,jdbcType=VARCHAR}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据年龄范围查询用户 -->
+    <select id="selectByAgeRange" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        WHERE 1=1
+        <if test="minAge != null">
+            AND age &gt;= #{minAge,jdbcType=INTEGER}
+        </if>
+        <if test="maxAge != null">
+            AND age &lt;= #{maxAge,jdbcType=INTEGER}
+        </if>
+        ORDER BY age ASC
+    </select>
+
+    <!-- 分页查询用户 -->
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM users
+        ORDER BY create_time DESC
+        LIMIT #{offset,jdbcType=INTEGER}, #{limit,jdbcType=INTEGER}
+    </select>
+
+    <!-- 统计用户总数 -->
+    <select id="countAll" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM users
+    </select>
+
+    <!-- 根据状态统计用户数 -->
+    <select id="countByStatus" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM users
+        WHERE status = #{status,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 插入用户 -->
+    <insert id="insert" parameterType="com.example.primary.domain.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (username, email, phone, age, status, create_time, update_time)
+        VALUES (#{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+                #{age,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!-- 选择性插入用户 -->
+    <insert id="insertSelective" parameterType="com.example.primary.domain.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="email != null">email,</if>
+            <if test="phone != null">phone,</if>
+            <if test="age != null">age,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username,jdbcType=VARCHAR},</if>
+            <if test="email != null">#{email,jdbcType=VARCHAR},</if>
+            <if test="phone != null">#{phone,jdbcType=VARCHAR},</if>
+            <if test="age != null">#{age,jdbcType=INTEGER},</if>
+            <if test="status != null">#{status,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+
+    <!-- 根据ID更新用户 -->
+    <update id="updateById" parameterType="com.example.primary.domain.User">
+        UPDATE users
+        SET username = #{username,jdbcType=VARCHAR},
+            email = #{email,jdbcType=VARCHAR},
+            phone = #{phone,jdbcType=VARCHAR},
+            age = #{age,jdbcType=INTEGER},
+            status = #{status,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!-- 选择性更新用户 -->
+    <update id="updateByIdSelective" parameterType="com.example.primary.domain.User">
+        UPDATE users
+        <set>
+            <if test="username != null">username = #{username,jdbcType=VARCHAR},</if>
+            <if test="email != null">email = #{email,jdbcType=VARCHAR},</if>
+            <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+            <if test="age != null">age = #{age,jdbcType=INTEGER},</if>
+            <if test="status != null">status = #{status,jdbcType=VARCHAR},</if>
+            <if test="updateTime != null">update_time = #{updateTime,jdbcType=TIMESTAMP},</if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据ID删除用户 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM users
+        WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!-- 批量插入用户 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO users (username, email, phone, age, status, create_time, update_time)
+        VALUES
+        <foreach collection="list" item="user" separator=",">
+            (#{user.username,jdbcType=VARCHAR}, #{user.email,jdbcType=VARCHAR}, #{user.phone,jdbcType=VARCHAR},
+             #{user.age,jdbcType=INTEGER}, #{user.status,jdbcType=VARCHAR}, #{user.createTime,jdbcType=TIMESTAMP},
+             #{user.updateTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <!-- 批量删除用户 -->
+    <delete id="batchDelete" parameterType="java.util.List">
+        DELETE FROM users
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.secondary.mapper.OrderMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.secondary.entity.Order">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="total_amount" property="totalAmount" jdbcType="DECIMAL"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        id, order_no, user_id, product_name, quantity, price, total_amount, status, create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询订单 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM orders 
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据订单号查询订单 -->
+    <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM orders 
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <!-- 根据用户ID查询订单列表 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM orders 
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据状态查询订单列表 -->
+    <select id="selectByStatus" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM orders 
+        WHERE status = #{status}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询所有订单 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List"/>
+        FROM orders 
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 插入订单 -->
+    <insert id="insert" parameterType="com.example.secondary.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (
+            order_no, 
+            user_id, 
+            product_name, 
+            quantity, 
+            price, 
+            total_amount, 
+            status, 
+            create_time, 
+            update_time
+        ) VALUES (
+            #{orderNo}, 
+            #{userId}, 
+            #{productName}, 
+            #{quantity}, 
+            #{price}, 
+            #{totalAmount}, 
+            #{status}, 
+            #{createTime}, 
+            #{updateTime}
+        )
+    </insert>
+
+    <!-- 更新订单信息 -->
+    <update id="update" parameterType="com.example.secondary.entity.Order">
+        UPDATE orders 
+        SET 
+            order_no = #{orderNo},
+            user_id = #{userId},
+            product_name = #{productName},
+            quantity = #{quantity},
+            price = #{price},
+            total_amount = #{totalAmount},
+            status = #{status},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 更新订单状态 -->
+    <update id="updateStatus">
+        UPDATE orders 
+        SET 
+            status = #{status},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除订单 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM orders 
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 统计订单总数 -->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) 
+        FROM orders
+    </select>
+
+    <!-- 根据状态统计订单数 -->
+    <select id="countByStatus" parameterType="java.lang.Integer" resultType="java.lang.Long">
+        SELECT COUNT(*) 
+        FROM orders 
+        WHERE status = #{status}
+    </select>
+
+    <!-- 根据用户ID统计订单数 -->
+    <select id="countByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT COUNT(*) 
+        FROM orders 
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 计算用户订单总金额 -->
+    <select id="sumAmountByUserId" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(total_amount), 0) 
+        FROM orders 
+        WHERE user_id = #{userId} 
+        AND status IN (2, 3, 4)
+    </select>
+
+</mapper>

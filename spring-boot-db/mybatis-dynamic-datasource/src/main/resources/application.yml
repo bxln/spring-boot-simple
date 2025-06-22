@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: mybatis-dynamic-datasource
+
+  # 多数据源配置
+  datasource:
+    # 主数据源配置 (写库)
+    master:
+      jdbc-url: jdbc:mysql://localhost:3306/master_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # HikariCP连接池配置
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        pool-name: MasterHikariPool
+        connection-test-query: SELECT 1
+    
+    # 从数据源配置 (读库)
+    slave:
+      jdbc-url: jdbc:mysql://localhost:3306/slave_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # HikariCP连接池配置
+      hikari:
+        maximum-pool-size: 15
+        minimum-idle: 3
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        pool-name: SlaveHikariPool
+        connection-test-query: SELECT 1
+
+# MyBatis配置
+mybatis:
+  # 使用注解驱动，不需要XML映射文件
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true
+    use-generated-keys: true
+    # 开启延迟加载
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    # 开启二级缓存
+    cache-enabled: true
+
+# 动态数据源配置
+dynamic:
+  datasource:
+    # 默认数据源
+    default: master
+    # 是否开启读写分离
+    read-write-separation: true
+    # 从库权重配置（支持多个从库负载均衡）
+    slave-weight:
+      slave: 1
+    # 数据源健康检查
+    health-check:
+      enabled: true
+      interval: 30000  # 30秒检查一次
+
+# 服务器配置
+server:
+  port: 8084
+
+# 日志配置
+logging:
+  level:
+    com.example: debug
+    org.apache.ibatis: debug
+    org.springframework.jdbc: debug
+    # 显示AOP切面日志
+    org.springframework.aop: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%logger{50}] - %msg%n"
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,datasource
+  endpoint:
+    health:
+      show-details: always
